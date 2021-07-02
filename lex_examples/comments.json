@@ -1,0 +1,14 @@
+[
+  {
+    "input": "; this is a comment and should lead to no result",
+    "expected": []
+  },
+  {
+    "input": "(+ 1 1) ; adding two numbers",
+    "expected": ["(", "+", "1", "1", ")"]
+  },
+  {
+    "input": " ( 1 ) ; extra whitespace",
+    "expected": ["(", "1", ")"]
+  }
+]
