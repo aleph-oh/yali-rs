@@ -1,7 +1,11 @@
 //! This module contains a parser which, given a stream of tokens, validates the tokens
 //! and transforms them into a syntax tree.
 
-use serde::{Deserialize, Serialize};
+#[cfg(test)]
+use {
+    serde::{Deserialize, Serialize}
+};
+use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt;
 use std::fmt::Formatter;
@@ -57,8 +61,8 @@ impl FromStr for Atom {
             return Err(());
         }
         if let Ok(as_float) = s.parse() {
-            if safely_convertible!(as_float, f64, i64) {
-                Ok(Atom::Integer(as_float as i64))
+            if let Ok(as_int) = s.parse() {
+                Ok(Atom::Integer(as_int))
             } else {
                 Ok(Atom::Number(as_float))
             }
