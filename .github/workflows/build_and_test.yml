@@ -21,7 +21,7 @@ jobs:
     - name: Format
       run: cargo fmt --all
     - name: Install clippy
-      run: cargo install clippy
+      run: rustup component add clippy
     - name: Lint
       run: cargo clippy
     - name: Run tests
