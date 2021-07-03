@@ -104,7 +104,7 @@ impl Expression {
                 )),
                 // TODO: cloning this token here isn't great. it would be nice to somehow move things
                 //  out of the ValidatedTokens object or move things out of the vector but both of
-                //  those would violate the borrowing rules.
+                //  those would violate the borrowing rules as far as I know.
             }
         } else {
             Err(ParseError::EmptyExpr)
