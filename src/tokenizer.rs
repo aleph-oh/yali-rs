@@ -39,31 +39,28 @@ impl From<Vec<String>> for Tokens {
 
 #[cfg(test)]
 mod tests {
+    use crate::tokenizer::Tokens;
+    use serde::{Deserialize, Serialize};
     use std::fmt::Display;
     use std::fs::File;
     use std::path::Path;
-    use crate::tokenizer::Tokens;
-    use serde::{Deserialize, Serialize};
 
     #[derive(Deserialize, Serialize)]
     struct TokenizerTestData {
         input: Vec<String>,
-        expected: Tokens
+        expected: Tokens,
     }
 
     fn check<P>(path: P)
     where
         P: AsRef<Path> + Display,
     {
-        let test_file = File::open(path.as_ref())
-            .unwrap_or_else(|_| panic!("Failed to open {}", path));
+        let test_file =
+            File::open(path.as_ref()).unwrap_or_else(|_| panic!("Failed to open {}", path));
         let test_data: Vec<TokenizerTestData> = serde_json::from_reader(test_file)
             .unwrap_or_else(|_| panic!("Failed to parse {}", path));
         for example in test_data {
-            assert_eq!(
-                Tokens::from(example.input),
-                example.expected
-            )
+            assert_eq!(Tokens::from(example.input), example.expected)
         }
     }
 
