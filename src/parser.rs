@@ -85,11 +85,38 @@ impl From<ValidationError> for ParseError {
     }
 }
 
-impl TryFrom<&ValidatedTokens> for Expression {
+impl Expression {
+    fn parse_recursive(tokens: &[Token]) -> Result<(Option<Self>, &[Token]), ParseError> {
+        if let Some((token, mut rest)) = tokens.split_first() {
+            match token {
+                Token::LeftParen => loop {
+                    let mut result = Vec::new();
+                    while let (Some(expr), next_rest) = Expression::parse_recursive(rest)? {
+                        result.push(expr);
+                        rest = next_rest;
+                    }
+                    return Ok((Some(Expression::SExpr(result)), rest));
+                },
+                Token::RightParen => Ok((None, rest)),
+                _ => Ok((
+                    Some(Expression::Atom(Atom::try_from(token.clone()).unwrap())),
+                    rest,
+                )),
+                // TODO: cloning this token here isn't great. it would be nice to somehow move things
+                //  out of the ValidatedTokens object or move things out of the vector but both of
+                //  those would violate the borrowing rules.
+            }
+        } else {
+            Err(ParseError::EmptyExpr)
+        }
+    }
+}
+
+impl TryFrom<ValidatedTokens> for Expression {
     type Error = ParseError;
 
-    fn try_from(tokens: &ValidatedTokens) -> Result<Self, Self::Error> {
-        todo!()
+    fn try_from(tokens: ValidatedTokens) -> Result<Self, Self::Error> {
+        Expression::parse_recursive(&tokens.0).map(|(expr, rest)| expr.unwrap())
     }
 }
 
@@ -98,7 +125,7 @@ impl TryFrom<Tokens> for Expression {
 
     fn try_from(tokens: Tokens) -> Result<Self, Self::Error> {
         let tokens = ValidatedTokens::try_from(tokens)?;
-        Self::try_from(&tokens)
+        Self::try_from(tokens)
     }
 }
 
@@ -140,7 +167,8 @@ mod tests {
         let test_data: Vec<HappyParseTestData> = load_test_data!(file, HappyParseTestData);
         for example in test_data {
             assert_eq!(
-                Expression::try_from(example.input).expect("Failed to parse"),
+                Expression::try_from(example.input.clone())
+                    .unwrap_or_else(|_| panic!("Failed to parse {:?}", example.input)),
                 example.expected
             );
         }

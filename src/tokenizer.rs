@@ -2,7 +2,7 @@
 use serde::{Deserialize, Serialize};
 
 #[cfg_attr(test, derive(Deserialize, Serialize, Debug))]
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub(crate) enum Token {
     Integer(u64),
     Number(f64),
@@ -29,7 +29,7 @@ impl From<String> for Token {
     }
 }
 
-#[cfg_attr(test, derive(Deserialize, Serialize, Debug, PartialEq))]
+#[cfg_attr(test, derive(Deserialize, Serialize, Debug, PartialEq, Clone))]
 pub(crate) struct Tokens(pub Vec<Token>);
 
 impl From<Vec<String>> for Tokens {
