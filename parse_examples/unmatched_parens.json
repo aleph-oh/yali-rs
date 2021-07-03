@@ -1,14 +1,14 @@
 [
   {
-    "input": ["("],
-    "expected": "UnbalancedParen"
+    "input": ["LeftParen"],
+    "expected": "UnbalancedParens"
   },
   {
-    "input": [")"],
-    "expected": "UnbalancedParen"
+    "input": ["RightParen"],
+    "expected": "UnbalancedParens"
   },
   {
-    "input": [")", "("],
-    "expected": "UnbalancedParen"
+    "input": ["RightParen", "LeftParen"],
+    "expected": "UnbalancedParens"
   }
 ]
