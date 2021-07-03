@@ -100,12 +100,26 @@ impl Expression {
     fn parse_tokens_recursive(tokens: &[String]) -> Result<(Expression, &[String]), ParseError> {
         let (first, rest) = tokens.split_first().ok_or(ParseError::EmptyExpr)?;
         match first.as_str() {
-            "(" => Ok((Expression::parse_tokens_recursive(rest)?.0, rest)),
+            "(" => Ok((Expression::read_tokens(rest)?.0, rest)),
             ")" => Err(ParseError::UnbalancedParen),
             _ => Ok((
                 Expression::Atom(first.parse().expect("Shouldn't occur; covered error cases")),
                 rest,
             )),
+        }
+    }
+
+    fn read_tokens(tokens: &[String]) -> Result<(Expression, &[String]), ParseError> {
+        let mut result = Vec::new();
+        let mut rest = tokens;
+        loop {
+            let (next, _) = rest.split_first().ok_or(ParseError::UnbalancedParen)?;
+            if next == ")" {
+                return Ok((Expression::SExpr(result), rest));
+            }
+            let (expr, new_rest) = Expression::parse_tokens_recursive(rest)?;
+            result.push(expr);
+            rest = new_rest;
         }
     }
 }
