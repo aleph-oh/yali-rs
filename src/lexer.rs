@@ -1,6 +1,6 @@
-//! This module contains a lexer / tokenizer which supports single-line comments.
+//! This module contains a lexer which supports single-line comments.
 
-/// Lexes, or tokenizes, a provided string into individual separated tokens.
+/// Lexes a provided string into individual separated tokens.
 pub(crate) fn lex<S>(src: S) -> Vec<String>
 where
     S: AsRef<str>,
