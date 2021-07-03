@@ -1,0 +1,14 @@
+[
+  {
+    "input": ["("],
+    "expected": "UnbalancedParen"
+  },
+  {
+    "input": [")"],
+    "expected": "UnbalancedParen"
+  },
+  {
+    "input": [")", "("],
+    "expected": "UnbalancedParen"
+  }
+]

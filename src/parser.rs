@@ -165,4 +165,14 @@ mod tests {
     fn no_nesting() {
         check_happy("./parse_examples/few_atoms.json")
     }
+
+    #[test]
+    fn unmatched_parens() {
+        check_sad("./parse_examples/unmatched_parens.json")
+    }
+
+    #[test]
+    fn empty_expr() {
+        check_sad("./parse_examples/empty_expr.json")
+    }
 }
