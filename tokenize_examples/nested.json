@@ -1,0 +1,26 @@
+[
+  {
+    "input": ["(", "*", "10", "(", "+", "5", "6", ")", ")"],
+    "expected": [
+      "LeftParen",
+      {
+        "Symbol": "*"
+      },
+      {
+        "Integer": 10
+      },
+      "LeftParen",
+      {
+        "Symbol": "+"
+      },
+      {
+        "Integer": 5
+      },
+      {
+        "Integer": 6
+      },
+      "RightParen",
+      "RightParen"
+    ]
+  }
+]
