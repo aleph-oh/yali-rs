@@ -1,6 +1,6 @@
-//! This module contains a lexer / tokenizer which supports single-line comments.
+//! This module contains a lexer which supports single-line comments.
 
-/// Lexes, or tokenizes, a provided string into individual separated tokens.
+/// Lexes a provided string into individual separated tokens.
 pub(crate) fn lex<S>(src: S) -> Vec<String>
 where
     S: AsRef<str>,
@@ -30,7 +30,7 @@ mod tests {
     use std::path::Path;
 
     #[derive(Serialize, Deserialize)]
-    struct TestData {
+    struct LexTestData {
         input: String,
         expected: Vec<String>,
     }
@@ -40,7 +40,7 @@ mod tests {
         P: AsRef<Path>,
     {
         let test_file = File::open(file).expect("Failed to open test data file");
-        let test_data: Vec<TestData> =
+        let test_data: Vec<LexTestData> =
             serde_json::from_reader(test_file).expect("Could not parse test data file");
         for example in test_data {
             assert_eq!(lex(example.input), example.expected);

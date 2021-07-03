@@ -1,0 +1,21 @@
+[
+  {
+    "input": [
+      "LeftParen"
+    ],
+    "expected": "UnbalancedParens"
+  },
+  {
+    "input": [
+      "RightParen"
+    ],
+    "expected": "UnbalancedParens"
+  },
+  {
+    "input": [
+      "RightParen",
+      "LeftParen"
+    ],
+    "expected": "UnbalancedParens"
+  }
+]

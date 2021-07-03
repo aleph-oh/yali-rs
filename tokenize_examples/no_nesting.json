@@ -1,0 +1,24 @@
+[
+  {
+    "input": [
+      "(",
+      "+",
+      "1",
+      "2.1",
+      ")"
+    ],
+    "expected": [
+      "LeftParen",
+      {
+        "Symbol": "+"
+      },
+      {
+        "Integer": 1
+      },
+      {
+        "Number": 2.1
+      },
+      "RightParen"
+    ]
+  }
+]

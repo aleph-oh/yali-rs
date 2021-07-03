@@ -1,0 +1,70 @@
+[
+  {
+    "input": [
+      "LeftParen",
+      {
+        "Symbol": "+"
+      },
+      {
+        "Integer": 1
+      },
+      {
+        "Integer": 2
+      },
+      "RightParen"
+    ],
+    "expected": {
+      "SExpr": [
+        {
+          "Atom": {
+            "Symbol": "+"
+          }
+        },
+        {
+          "Atom": {
+            "Integer": 1
+          }
+        },
+        {
+          "Atom": {
+            "Integer": 2
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": [
+      "LeftParen",
+      {
+        "Symbol": "defun"
+      },
+      {
+        "Symbol": "pi"
+      },
+      {
+        "Number": 3.14
+      },
+      "RightParen"
+    ],
+    "expected": {
+      "SExpr": [
+        {
+          "Atom": {
+            "Symbol": "defun"
+          }
+        },
+        {
+          "Atom": {
+            "Symbol": "pi"
+          }
+        },
+        {
+          "Atom": {
+            "Number": 3.14
+          }
+        }
+      ]
+    }
+  }
+]
