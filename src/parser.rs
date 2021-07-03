@@ -26,7 +26,7 @@ impl TryFrom<Tokens> for ValidatedTokens {
             Token::LeftParen => Ok(unclosed_parens + 1),
             Token::RightParen => {
                 if unclosed_parens == 0 {
-                    Err(ValidationError::UnbalancedParens)?;
+                    return Err(ValidationError::UnbalancedParens);
                 }
                 Ok(unclosed_parens - 1)
             }
@@ -89,7 +89,7 @@ impl Expression {
     fn parse_recursive(tokens: &[Token]) -> Result<(Option<Self>, &[Token]), ParseError> {
         if let Some((token, mut rest)) = tokens.split_first() {
             match token {
-                Token::LeftParen => loop {
+                Token::LeftParen => {
                     let mut result = Vec::new();
                     while let (Some(expr), next_rest) = Expression::parse_recursive(rest)? {
                         result.push(expr);
@@ -116,7 +116,7 @@ impl TryFrom<ValidatedTokens> for Expression {
     type Error = ParseError;
 
     fn try_from(tokens: ValidatedTokens) -> Result<Self, Self::Error> {
-        Expression::parse_recursive(&tokens.0).map(|(expr, rest)| expr.unwrap())
+        Expression::parse_recursive(&tokens.0).map(|(expr, _rest)| expr.unwrap())
     }
 }
 
