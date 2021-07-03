@@ -22,7 +22,10 @@
     ]
   },
   {
-    "input": ["1.1", "2.1"],
+    "input": [
+      "1.1",
+      "2.1"
+    ],
     "expected": [
       {
         "Number": 1.1
@@ -33,7 +36,11 @@
     ]
   },
   {
-    "input": ["defun", "pi", "PI"],
+    "input": [
+      "defun",
+      "pi",
+      "PI"
+    ],
     "expected": [
       {
         "Symbol": "defun"
@@ -47,11 +54,23 @@
     ]
   },
   {
-    "input": ["(", "("],
-    "expected": ["LeftParen", "LeftParen"]
+    "input": [
+      "(",
+      "("
+    ],
+    "expected": [
+      "LeftParen",
+      "LeftParen"
+    ]
   },
   {
-    "input": [")", ")"],
-    "expected": ["RightParen", "RightParen"]
+    "input": [
+      ")",
+      ")"
+    ],
+    "expected": [
+      "RightParen",
+      "RightParen"
+    ]
   }
 ]
