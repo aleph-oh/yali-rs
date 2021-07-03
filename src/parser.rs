@@ -2,9 +2,7 @@
 //! and transforms them into a syntax tree.
 
 #[cfg(test)]
-use {
-    serde::{Deserialize, Serialize}
-};
+use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt;
@@ -32,6 +30,33 @@ pub(crate) enum ParseError {
     EmptyExpr,
 }
 
+struct TokenStream(Vec<String>);
+
+impl TryFrom<Vec<String>> for TokenStream {
+    type Error = ParseError;
+
+    fn try_from(tokens: Vec<String>) -> Result<Self, Self::Error> {
+        let mut unclosed = 0;
+        for token in &tokens {
+            match token.as_str() {
+                "(" => unclosed += 1,
+                ")" => {
+                    unclosed -= 1;
+                    if unclosed < 0 {
+                        return Err(ParseError::UnbalancedParen);
+                    }
+                }
+                _ => {}
+            }
+        }
+        if unclosed == 0 {
+            Ok(TokenStream(tokens))
+        } else {
+            return Err(ParseError::UnbalancedParen);
+        }
+    }
+}
+
 impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
@@ -46,12 +71,6 @@ impl fmt::Display for ParseError {
 }
 
 impl Error for ParseError {}
-
-macro_rules! safely_convertible {
-    ($val: expr, $src_ty: ty, $dest_ty: ty) => {
-        $val as $src_ty == ($val as $dest_ty) as $src_ty
-    };
-}
 
 impl FromStr for Atom {
     type Err = ();
@@ -73,8 +92,9 @@ impl FromStr for Atom {
 }
 
 impl Expression {
-    pub(crate) fn parse_tokens(tokens: &[String]) -> Result<Expression, ParseError> {
-        Ok(Expression::parse_tokens_recursive(tokens)?.0)
+    pub(crate) fn parse_tokens(tokens: Vec<String>) -> Result<Expression, ParseError> {
+        let stream = TokenStream::try_from(tokens)?;
+        Ok(Expression::parse_tokens_recursive(&*stream.0)?.0)
     }
 
     fn parse_tokens_recursive(tokens: &[String]) -> Result<(Expression, &[String]), ParseError> {
@@ -88,26 +108,10 @@ impl Expression {
             )),
         }
     }
-
-    fn read_tokens(tokens: &[String]) -> Result<(Expression, &[String]), ParseError> {
-        let mut result = Vec::new();
-        let rest = tokens;
-        loop {
-            let (next, mut rest) = rest.split_first().ok_or(ParseError::UnbalancedParen)?;
-            println!("{}", next);
-            if next == ")" {
-                return Ok((Expression::SExpr(result), rest));
-            }
-            let (expr, new_rest) = Expression::read_tokens(rest)?;
-            result.push(expr);
-            rest = new_rest;
-        }
-    }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::Expression::SExpr;
     use crate::parser::{Expression, ParseError};
     use serde::{Deserialize, Serialize};
     use serde_json;
@@ -142,7 +146,7 @@ mod tests {
         let test_data: Vec<HappyParseTestData> = load_test_data!(file, HappyParseTestData);
         for example in test_data {
             assert_eq!(
-                Expression::parse_tokens(&*example.input)
+                Expression::parse_tokens(example.input.clone())
                     .expect(&*format!("Failed to parse {:?}", &*example.input)),
                 example.expected
             );
@@ -156,7 +160,7 @@ mod tests {
         let test_data: Vec<SadParseTestData> = load_test_data!(file, SadParseTestData);
         for example in test_data {
             assert_eq!(
-                Expression::parse_tokens(&*example.input).expect_err(&*format!(
+                Expression::parse_tokens(example.input.clone()).expect_err(&*format!(
                     "Should have failed to parse {:?}",
                     &*example.input
                 )),
